@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Map visualizations</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script src="./js/TangleKit/Tangle.js"></script>
+<script src="./js/TangleKit/mootools.js"></script>
+<script src="./js/TangleKit/sprintf.js"></script>
+<script src="./js/TangleKit/BVTouchable.js"></script>
+<script src="./js/TangleKit/TangleKit.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/d3-path@3"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3-shape@3"></script>
+
+<script src="./js/simulation.js"></script>
+<link rel="stylesheet" href="./styles/LeafletAddOn.css" />
+<script src="./js/LeafletAddOn.js"></script>
+<script src="./js/main.js"></script>
+<script src="./js/settings.js"></script>
+<script src="./js/plots.js"></script>
+<script src="./js/preset_functions.js"></script>
+
+
+
+
+
+<link rel="stylesheet" type="text/css" href="./styles/style.css">
+<link rel="stylesheet" type="text/css" href="./styles/TangleKit.css">
+</head>
+<body>
+
+
+
+
+
+
+<div id="options-div">
+	<div id="menu">
+		<div id="upper-bar">
+			<h1 class="title"><div data-hover="After you selected a city and chose a starting and ending point, some suggested routes will appear. 
+			You can change the default parameters, add additional stops along the way, drag and drop existing points, change the color of the routes by clicking on the associated color box and delete any element by pressing SHIFT when clicking on it.
+Hovering on the right side of this panel will let you access the simulated dots' positions at a given time and will display their order of arrival across time.
+Pressing the SPACE bar will let you pause/unpause." class="hovertext">Trip simulator</div></h1>
+			<div id="all-options" class="options-list">
+				<span class="parameters">
+					<label for="cities">Choose a city:</label>
+					<select id="cities" name="cities">
+						<option value="unknown" hidden disabled selected> -- select an option -- </option>
+                    <optgroup label="Algeria">
+                        <option value="Alger">Algiers</option>
+                        <option value="Oran">Oran</option>
+                    </optgroup>
+        			<optgroup label="Canada">
+						<option value="Kitchener">Kitchener</option>
+						<option value="Mississauga">Mississauga</option>
+						<option value="Ottawa">Ottawa</option>
+						<option value="Toronto">Toronto</option>
+					</optgroup>
+					<optgroup label="Chile">
+                        <option value="Pucón">Pucón</option>
+                        <option value="Santiago">Santiago</option>
+                        <option value="Valparaíso">Valparaíso</option>
+                        <option value="Viña del Mar">Viña del Mar</option>
+                    </optgroup>
+					<optgroup label="France">
+						<option value="Albi">Albi</option>
+						<option value="Bordeaux">Bordeaux</option>
+						<option value="Mont-de-Marsan">Mont-de-Marsan</option>
+						<option value="Pau">Pau</option>
+						<option value="Toulouse">Toulouse</option>
+					</optgroup>
+					<optgroup label="Germany">
+						<option value="Berlin">Berlin</option>
+					</optgroup>
+					<optgroup label="New Zealand">
+                        <option value="Auckland">Auckland</option>
+                        <option value="Christchurch">Christchurch</option>
+                        <option value="Wellington">Wellington</option>
+                    </optgroup>
+                    </optgroup>
+					<optgroup label="Senegal">
+                        <option value="Dakar">Dakar</option>
+                        <option value="Saint-Louis">Saint-Louis</option>
+                        <option value="Thiès">Thiès</option>
+                        <option value="Touba">Touba</option>
+                    </optgroup>
+					<optgroup label="United States">
+						<option value="Boston">Boston</option>
+						<option value="New Bedford">New Bedford</option>
+						<option value="Oklahoma City">Oklahoma City</option>
+                        <option value="Tulsa">Tulsa</option>
+					</optgroup>
+					</select>	
+				</span>
+				<span class="parameters">
+					<label for="type-map">Choose a map:</label>
+					<select id="type-map" name="type-map">
+						<option value="regular" selected>Regular</option>
+						<option value="topography">Topography</option>
+						<option value="toner">Toner</option>
+						<option value="imagery">Imagery</option>
+					</select>	
+				</span>
+				<span class="parameters">
+					<span id="nb-dots-span">
+						<span class="TKAdjustableNumber" data-var="nb_dots" data-min="4" data-max="100"></span> dots
+					</span>
+					<span id="nb-simulations-span">
+						/<span class="TKAdjustableNumber" data-var="nb_simulations" data-min="100" data-max="10000" data-step="100"></span> simulations
+					</span>
+				</span>
+				<span id="opacity-span" class="parameters">
+					Opacity: <span class="TKAdjustableNumber" data-var="opacity" data-min="0" data-max="100"></span>%
+					<!-- <input type="range" id="opacity" class="slider" name="opacity" min="0" max="100"> -->
+				</span>
+
+				<span id="speed-span" class="parameters">
+				Speed: between <span class="TKAdjustableNumber" data-var="speed_min" data-min="1" data-max="15" data-step="0.5"></span> and <span class="TKAdjustableNumber" data-var="speed_max" data-min="1" data-max="15" data-step="0.5"></span> km/h
+			</span>
+				<!--			<div id="parameters">-->
+				<!--				<div id="speed-range"></div>-->
+				<!--			</div>-->
+				<span id="colors-span" class="parameters">
+				<input class="color-for" type="color" id="color-for-0" name="color-for-0" value="#aaaaaa"  onmousedown="colorClicked('0')" onmouseenter="bringPathToFront('0')" onmouseleave="resetPathsStrokeWidth()">
+				</span>
+
+			</div>
+		</div>
+		
+	</div>
+
+
+</div>
+
+<div id="map"></div>
+
+<div id="settings-div">
+	<div class="options-list">
+		<span id="title-plot" class="parameters">Time of arrival plot</span>
+		<span id="space-flex" class="parameters"></span>
+		<span class="parameters"></span>
+		<span class="parameters"></span>
+		<span class="parameters"></span>
+			<span id="middle-value" class="parameters switch-span">
+				<span id="median" class="option-selected">median</span>
+				<!-- Rounded switch -->
+				<label class="switch">
+				  <input type="checkbox" id="middle">
+				  <span class="slider round"></span>
+				</label>
+				<span id="mean">mean</span>
+			</span>
+
+		<span id="plot-value" class="parameters switch-span">
+				<span id="dot-plot" class="option-selected">dot plot</span>
+			<!-- Rounded switch -->
+				<label class="switch">
+				  <input type="checkbox" id="plot">
+				  <span class="slider round"></span>
+				</label>
+				<span id="distribution-plot">distribution</span>
+			</span>
+	</div>
+	<div id="time-holder">
+		<svg id="time-svg"></svg>
+	</div>
+	<div id="example-svg-container">
+	<svg id="example-container">
+		<g id="dotplot"></g>
+		<g id="distribution" display="none"></g>
+	</svg>
+	</div>
+<!--	<span class="column-menu"><span id="time-holder">-->
+<!--			</span></span>-->
+<!--	<span><a download="test.json" id="download_link" style="display: none">Download</a></span>-->
+
+
+
+	
+	<!--		<div id="all-options2">-->
+	<!--			Playback speed:-->
+	<!--			<div id="speed-slider">-->
+
+	<!--			</div>-->
+	<!--		</div>-->
+
+</div>
+
+<div id="experiment" style="visibility:hidden;">
+    <div>
+    <form id="experiment_form" action="<?php echo 'index.php?preset=1';?>" method="POST">
+    <label for="participant_id" id="label_participant_id" style="visibility:hidden;">Your participant ID:</label>
+    <input id="participant_id" name="participant_id" style="visibility:hidden;" type="text">
+    <input id="condition" name="condition" style="visibility:hidden;" type="text">
+    <input id="data" name="data" style="visibility:hidden;" type="text">
+    <button id="form_button" type="submit" >Ready!</button>
+    </form>
+    </div>
+</div>
+
+<span id="distance-holder"></span>
+<span id="tutorial" style="visibility:hidden;">HARICOT ROUGE</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
+
+<script src = "js/variables.js"></script>
+<script>
+$(window).on('load', async function () {
+    resizeMapContainer();
+    const span = document.getElementById("colors-span");
+    const all_opts = document.getElementById("all-options");
+    
+//     await newColor();
+
+    colors = ["#FF6FBE","#FFD004","#392DFF","#3E3E3E","#9AB3A4","#FFC8EE","#1BA1F3","#6B5517"];
+    const input = d3.select(`input#color-for-0`)
+        .attr("value",colors[0])
+        .style("width", `${Math.floor(all_opts.getBoundingClientRect().width / all_opts.getElementsByClassName("parameters").length / input_from_json.length)}px`);
+    
+    document.getElementById("color-for-0").addEventListener("input",newColorPicked);
+//     d3.selectAll("input.color-for")
+    
+    // resetColorPickers();
+
+
+   //  <?php    
+    
+   //  $id = "";
+   //  $data = "";
+    
+   //  $PRESET1 = "Alger_3672912_306695";
+   // $PRESET2 = "Berlin_5251153_1339474";
+   // $PRESET3 = "Wellington_-4129489_17478746";
+   // $PRESET4 = "Boston_4235754_-7105828";
+   // $PRESET5 = "Mont-de-Marsan_4389864_-50481";
+   // $PRESET6 = "Christchurch_-4353038_17262749";
+   // $PRESET7 = "Pau_4330139_-37341";
+   // $PRESET8 = "Ottawa_4542437_-7569554";
+   // $PRESET9 = "New Bedford_4163986_-7093735";
+   // $PRESET10 = "Valparaíso_-3304633_-7159867";
+   // $PRESET11 = "Dakar_1472883_-1745912";
+   // $PRESET12 = "Oklahoma City_3547633_-9752735";
+   // $PRESET13 = "Auckland_-3684833_17474987";
+   // $PRESET14 = "Kitchener_4345704_-8050271";
+   // $PRESET15 = "Saint-Louis_1601423_-1649245";
+   // $PRESET16 = "Viña del Mar_-3302963_-7156374";
+   // $PRESET17 = "Tulsa_3615075_-9598866";
+   // $PRESET18 = "Touba_1486070_-1588310"; 
+   
+   // $PRESETS_FILES = array($PRESET1,$PRESET2,$PRESET3,$PRESET4,$PRESET5,$PRESET6,$PRESET7,$PRESET8,$PRESET9,$PRESET10,$PRESET11,$PRESET12,$PRESET13,$PRESET14,$PRESET15,$PRESET16,$PRESET17,$PRESET18);
+    
+    
+   //    $PRESETS = array(array(14, 16, 17, 12, 11, 1, 8, 7, 13, 2, 6, 15, 3, 9, 4, 5, 10, 18), 
+   //                      array(18, 5, 4, 7, 17, 3, 15, 10, 6, 9, 13, 8, 2, 1, 11, 12, 16, 14), 
+   //                      array(14, 9, 12, 17, 4, 15, 13, 11, 10, 1, 7, 2, 5, 16, 3, 6, 8, 18), 
+   //                          array(18, 11, 16, 8, 6, 4, 1, 5, 3, 17, 10, 13, 9, 7, 12, 2, 15, 14));
+                      
+                      
+   // $preset_file_index = $PRESET1;  
+   // $NB_PRESET = 0;
+                        
+                        
+   // function retrieveFileData($filename) {
+   //         $filename = "./presets/"."$filename".".json";
+   //         $file = fopen($filename, "r" );
+   
+   //         if( $file == false ) {
+   //             echo ( "Error in opening file" );
+   //             exit();
+   //         }
+   
+   //         $filesize = filesize( $filename );
+   //         $filetext = fread( $file, $filesize );
+   //         fclose( $file );
+   
+   //         echo ( "$filetext" );
+   //     }
+    
+   //  if ($_GET["preset"] == 0) {
+   //      $id = uniqid(rand()."_",false); 
+   //      $data = "";
+
+   //      $all_former_presets = fopen("all_former_presets.txt", "a+");
+   //      fwrite($all_former_presets, $id."\n");
+   //      fclose($all_former_presets);
+        
+   //      $all_former_presets_write = fopen("all_former_presets.txt", "r");
+   //  //     $content = fread($all_former_presets_write,filesize("all_former_presets.txt"));
+   //      $content = explode(PHP_EOL,fread($all_former_presets_write,filesize("all_former_presets.txt")));
+   //      $NB_PRESET = (count($content)-2)%4;
+   //      fclose($all_former_presets_write);
+        
+        
+   //      $results = fopen("./results/results_".$id.".csv", "a+");
+   //      fwrite($results, 'participant_id;group');
+   //      for ($x = 0 ; $x < 18 ; $x++) {
+   //          fwrite($results, ';'.$PRESETS[$NB_PRESET][$x]);
+   //      }
+   //      fwrite($results, "\n".$id.';'.$NB_PRESET);
+   //      fclose($results);
+        
+   //      $preset_file_index = $PRESET1;
+        
+
+   //  } else if ($_GET["preset"] > 0 && $_GET["preset"] < 20) {
+   //      $NB_PRESET = $_POST["condition"];
+   //      $id = $_POST["participant_id"];
+   //      $data = $_POST["data"];
+   //      if ($_GET['preset'] > 0 && $_GET['preset'] < 19) {
+   //          $preset_file_index = $PRESETS_FILES[$PRESETS[$NB_PRESET][$_GET["preset"]-1]-1];;
+   //      } else {
+   //          $preset_file_index = $PRESET1;
+   //      }
+   //  }
+    
+   //  if ($_GET["preset"] == 19) {
+   //          $results = fopen("./results/results_".$id.".csv", "a+");
+   //          fwrite($results, $_POST["data"]);
+   //          fclose($results);
+   //  }
+   //  ?>
+    
+    data = "";
+    // console.log(<?php echo '"'.$id.'"' ?>);
+    // document.getElementById("participant_id").value = "<?php echo $id;?>";
+   
+    // document.getElementById("condition").value = "<?php echo $NB_PRESET;?>";
+    // d3.select("form#experiment_form")
+    //     .attr("action",'index.php?preset=<?php echo ($_GET["preset"]+1); ?>');
+    
+    
+    // if(<?php echo $_GET["preset"] ; ?> < 0) {
+    drawSpeeds(speed_tangle.getValue("speed_min"),speed_tangle.getValue("speed_max"));
+    // }
+//     preset_key = <?php 
+// if ($_GET["preset"]) {
+//         if ($_GET["preset"] > 18 || $_GET["preset"]  < 0) {
+//             echo $_GET["preset"];
+//         } else {
+//             echo $PRESETS[$NB_PRESET][$_GET["preset"]-1];
+//         }
+//    } else {
+//    echo (0);}
+//     ?>;
+    preset_key = -1;
+    let city_name = "rien";
+    if (preset_key > 0 && preset_key < 19) {
+        await resetEverything();
+        // city_name = ("<?php echo $preset_file_index;?>").split("_")[0];
+        // presaved = <?php echo retrieveFileData($preset_file_index);?>;
+    }
+    if (preset_key === 0) {
+        // d3.select("input#participant_id")
+        //     .style("visibility","visible")
+        //     .attr("readonly",true);
+        // d3.select("label#label_participant_id")
+        //             .style("visibility","visible");
+    
+    }
+    if (preset_key === -1) {
+        document.getElementById("form_button").innerHTML = "Start tutorial";
+        document.getElementById("experiment_form").removeAttribute("action");
+        d3.select("button#form_button")
+                .attr("type","button")
+                .attr("onclick",'loadTutorial()');
+        d3.select("div#experiment")
+           .style("visibility", "visible");
+    } else if (preset_key !== 0) {
+        loadPreset(preset_key,city_name);
+    }
+    const tuto_d = document.getElementById("tutorial");
+    tuto_d.style.top = "15vh";
+    tuto_d.style.left = "30vw";
+    
+});
+
+
+$(window).on('resize',  function () {
+    resizeMapContainer();
+});
+
+</script>
+
+
