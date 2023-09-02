@@ -211,7 +211,7 @@ L.LeafletControlRoutingtoaddress = L.Control.extend({
 
         }
         // let url = `http://localhost:${this.options.port}/`;
-        let url = `http://router.project-osrm.org/`;
+        let url = `https://router.project-osrm.org/`;
         if (coords.length > 0) {
             url += `trip/v1/driving/${this.json_obj_startingpoint[0].lon},${this.json_obj_startingpoint[0].lat}`;
             for (let i = 0; i < json_obj_otherpoints.length; i++) {
