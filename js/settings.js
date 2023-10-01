@@ -23,7 +23,7 @@ function cityCoordinates(city) {
             return [-33.04724, -71.61277];
         case 'Santiago':
             return [-33.45186, -70.65047];
-        case 'Pucón':
+        case 'Pucon':
             return [-39.27616, -71.97465];
         case 'Vina del Mar':
             return [-33.02505, -71.55225];
