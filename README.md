@@ -4,6 +4,7 @@ This tool is a demo version. The simulation model uses pedestrian logic but send
 
 ## Description of files
 - ``index.html`` contains the main HTML code for the tool webpage.
+- ``tutorial.html`` contains the tutorial webpage.
 - ``main.js`` contains the main JavaScript functions.
 - ``LeafletAddOn.js`` contains the Leaflet extension used to manage the animation displayed on the map and the requests to OSRM+Overpass.
 - ``plots.js`` contains the functions used for the static plots.
