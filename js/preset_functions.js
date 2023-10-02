@@ -10,14 +10,14 @@ async function loadPreset(key,city_name) {
         } else if (key > 0 && key <= 18) {
             // document.getElementById("form_button").innerHTML = "next"
             colors = ["#FF6FBE","#FFD004","#392DFF"];
-            // d3.select('span#middle-value')
-            //     .style("visibility",'hidden');
+            d3.select('span#middle-value')
+                .style("visibility",'hidden');
             nb_simulations_tangle.setValue("nb_simulations",presaved[0]["result"].length);
             document.getElementById("cities").value = city_name;
 
             traffic_signals_info = await getTrafficSignalsOf(cities_selector.value);
             await startAnimation(cities_selector.value);
-            cities_selector.disabled = false;
+            cities_selector.disabled = true;
             const coordinates = [presaved[0].base_segments.segments[0].start_coordinates,presaved[0].base_segments.segments[presaved[0].base_segments.segments.length-1].end_coordinates];
             createRouting(map_instance, coordinates[0]);
             await routing_control._loadPreset(coordinates);
