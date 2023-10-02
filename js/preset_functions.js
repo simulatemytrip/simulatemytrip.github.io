@@ -17,7 +17,7 @@ async function loadPreset(key,city_name) {
 
             traffic_signals_info = await getTrafficSignalsOf(cities_selector.value);
             await startAnimation(cities_selector.value);
-            cities_selector.disabled = true;
+            cities_selector.disabled = false;
             const coordinates = [presaved[0].base_segments.segments[0].start_coordinates,presaved[0].base_segments.segments[presaved[0].base_segments.segments.length-1].end_coordinates];
             createRouting(map_instance, coordinates[0]);
             await routing_control._loadPreset(coordinates);
