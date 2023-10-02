@@ -10,8 +10,8 @@ async function loadPreset(key,city_name) {
         } else if (key > 0 && key <= 18) {
             // document.getElementById("form_button").innerHTML = "next"
             colors = ["#FF6FBE","#FFD004","#392DFF"];
-            d3.select('span#middle-value')
-                .style("visibility",'hidden');
+            // d3.select('span#middle-value')
+            //     .style("visibility",'hidden');
             nb_simulations_tangle.setValue("nb_simulations",presaved[0]["result"].length);
             document.getElementById("cities").value = city_name;
 
